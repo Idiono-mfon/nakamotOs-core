@@ -1,15 +1,11 @@
 {
-  "name": "@tomafrench/solidity-template",
-  "description": "Setup for writing Solidity smart contracts",
+  "name": "nakamotOs-core",
+  "description": "Decentralize your breakfast",
   "version": "1.0.0",
   "contributors": [
     {
-      "name": "Tom French",
-      "url": "https://github.com/TomAFrench"
-    },
-    {
-      "name": "Paul Razvan Berg",
-      "url": "https://paulrberg.com"
+      "name": "Sam Hatem",
+      "url": "https://github.com/samhatem"
     }
   ],
   "devDependencies": {
@@ -79,5 +75,8 @@
     "prettier:list-different": "prettier --config .prettierrc --list-different \"**/*.{js,json,md,sol,ts}\"",
     "test": "hardhat test",
     "typechain": "hardhat typechain"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^4.0.0-rc.0"
   }
 }

@@ -3,13 +3,13 @@ import { expect } from "chai";
 import { deployments, ethers } from "hardhat";
 import { NakamotOs } from "../typechain";
 import { deploy } from "./helpers";
-import { DECIMALS, MAX_SUPPLY } from "../config";
+import { DECIMALS_MULTIPLIER, MAX_SUPPLY, NAME, SYMBOL } from "../constants";
 
 const setup = deployments.createFixture(async () => {
     const admin = await ethers.getNamedSigner("admin");
     const bagHolderAddress = await admin.getAddress();
     const token = (await deploy("NakamotOs", {
-        args: ["NakamotOs", "BKFST", MAX_SUPPLY, await admin.getAddress()],
+        args: [NAME, SYMBOL, MAX_SUPPLY, await admin.getAddress()],
         connect: admin,
     })) as NakamotOs;
 
@@ -39,7 +39,7 @@ describe("Unit tests", function () {
         });
 
         it("allows burning the token", async function () {
-            const burnAmount = DECIMALS.mul(10);
+            const burnAmount = DECIMALS_MULTIPLIER.mul(10);
             await token.burn(burnAmount);
             const expectedAmountLeft = MAX_SUPPLY.sub(burnAmount);
 
