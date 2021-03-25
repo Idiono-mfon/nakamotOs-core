@@ -7,8 +7,8 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 contract NakamotOs is ERC20 {
     event Burn(address indexed burner, uint256 amount);
 
-    mapping(address => uint256) public nftClaims;
-    address nftTokenAddress;
+    public mapping(address => uint256) nftClaims;
+    public address nftTokenAddress;
 
     constructor(
         string memory name_,
