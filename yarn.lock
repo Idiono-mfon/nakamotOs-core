@@ -7043,6 +7043,11 @@ mkdirp@0.5.5, mkdirp@0.5.x, mkdirp@^0.5.0, mkdirp@^0.5.1:
   dependencies:
     minimist "^1.2.5"
 
+mnemonic@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/mnemonic/-/mnemonic-1.0.1.tgz#c18aa04db4bd99ab73d9aad7dec4e33f4962ed12"
+  integrity sha1-wYqgTbS9matz2arX3sTjP0li7RI=
+
 mocha@^7.1.1, mocha@^7.1.2:
   version "7.2.0"
   resolved "https://registry.yarnpkg.com/mocha/-/mocha-7.2.0.tgz#01cc227b00d875ab1eed03a75106689cfed5a604"

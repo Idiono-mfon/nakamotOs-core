@@ -4,12 +4,13 @@ pragma solidity 0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
+
 contract NakamotOs is ERC20 {
     event Burn(address indexed burner, uint256 amount);
-    event Claim(address indexed claimer, uint256 amount)
+    event Claim(address indexed claimer, uint256 amount);
 
-    public mapping(address => uint256) nftClaims;
-    public address nftTokenAddress;
+    mapping(address => uint256) public nftClaims;
+    address public  nftTokenAddress;
 
     constructor(
         string memory name_,
