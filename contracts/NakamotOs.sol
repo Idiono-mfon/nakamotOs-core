@@ -7,18 +7,31 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 contract NakamotOs is ERC20 {
     event Burn(address indexed burner, uint256 amount);
 
+    mapping(address => uint256) public nftClaims;
+    address nftTokenAddress;
+
     constructor(
         string memory name_,
         string memory symbol_,
         uint256 maxSupply,
-        address bagHolder
+        address bagHolder,
+        address nftTokenAddress_
     ) ERC20(name_, symbol_) {
         _mint(bagHolder, maxSupply);
+        nftTokenAddress = nftTokenAddress_;
+    }
+
+    modifier onlyNFT() {
+        require(_msgSender() === nftTokenAddress, "Caller must be the NFT");
+        _;
     }
 
     function burn(uint256 amount) external returns (bool) {
         _burn(_msgSender(), amount);
+        nftClaims[_msgSender()] = amount;
         emit Burn(_msgSender(), amount);
         return true;
     }
+
+    function claimNFT(uint256 amount) external onlyNFT returns (bool) {}
 }
