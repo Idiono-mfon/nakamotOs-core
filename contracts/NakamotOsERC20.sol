@@ -23,22 +23,23 @@ contract NakamotOs is ERC20 {
     }
 
     modifier onlyNFT() {
-        require(_msgSender() === nftTokenAddress, "Caller must be the NFT");
+        require(_msgSender() == nftTokenAddress, "Caller must be the NFT");
         _;
     }
 
     function burn(uint256 amount) external returns (bool) {
+        // this gets called by end user
         _burn(_msgSender(), amount);
         nftClaims[_msgSender()] = amount;
         emit Burn(_msgSender(), amount);
         return true;
     }
 
-    function claimNFT(uint256 amount) external onlyNFT returns (bool) {
+    function claimNFT(uint256 amount, address minter) external onlyNFT returns (bool) {
         //external erc721 contract calls to claim
-        require(nftClaims[msgSender] > 0);
-        nftClaims[_msgSender()] -= amount;
-        emit Claim(_msgSender(), amount);
+        require(nftClaims[minter] >= amount);
+        nftClaims[minter] -= amount;
+        emit Claim(minter, amount);
         return true;
     }
 }
