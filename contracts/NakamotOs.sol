@@ -6,6 +6,7 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 contract NakamotOs is ERC20 {
     event Burn(address indexed burner, uint256 amount);
+    event Claim(address indexed claimer, uint256 amount)
 
     public mapping(address => uint256) nftClaims;
     public address nftTokenAddress;
@@ -33,5 +34,11 @@ contract NakamotOs is ERC20 {
         return true;
     }
 
-    function claimNFT(uint256 amount) external onlyNFT returns (bool) {}
+    function claimNFT(uint256 amount) external onlyNFT returns (bool) {
+        //external erc721 contract calls to claim
+        require(nftClaims[msgSender] > 0);
+        nftClaims[_msgSender()] -= amount;
+        emit Claim(_msgSender(), amount);
+        return true;
+    }
 }
