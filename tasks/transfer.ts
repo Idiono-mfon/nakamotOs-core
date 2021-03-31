@@ -26,7 +26,7 @@ task(TRANSFER, "transfer NakamotOs to whomever you wish")
         const { deployer } = await hre.getNamedAccounts();
 
         const response = await hre.deployments.execute(
-            "NakamotOs",
+            "NakamotOsERC20",
             { from: deployer },
             "transfer",
             recipient,
