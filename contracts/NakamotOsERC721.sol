@@ -7,6 +7,8 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "./NakamotOsERC20.sol";
 
 contract NakamotOsERC721 is ERC721, Ownable {
+    using SafeMath for uint256;
+
     NakamotOsERC20 public nakamotOsErc20;
 
     string public _tokenURI;
@@ -32,7 +34,11 @@ contract NakamotOsERC721 is ERC721, Ownable {
         return _tokenURI;
     }
 
-    function mintOne(address recipient) external onlyNakamotOs returns (bool) {
-        _safeMint(recipient, totalSupply());
+    function mint(address recipient, uint256 amount) external onlyNakamotOs returns (bool) {
+        for (uint i = 0; i < amount; i = i.add(1)) {
+            _safeMint(recipient, totalSupply());
+        }
+
+        return true;
     }
 }

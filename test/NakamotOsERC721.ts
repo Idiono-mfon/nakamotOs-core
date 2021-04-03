@@ -33,27 +33,33 @@ describe("ERC721", function () {
         const nftMintAmount = ethers.BigNumber.from(1);
         await erc20.burn(nftMintAmount.mul(DECIMALS_MULTIPLIER));
 
-        await nft.mint(nftMintAmount);
-
         const balance = await nft.balanceOf(bagHolder);
 
         expect(balance.toString()).to.equal(nftMintAmount.toString());
-
-        const nftClaims = await erc20.nftClaims(bagHolder);
-        expect(nftClaims.toString()).to.equal("0");
     });
 
     it("allows claiming multiple nfts at once", async function () {
         const nftMintAmount = ethers.BigNumber.from(5);
         await erc20.burn(nftMintAmount.mul(DECIMALS_MULTIPLIER));
 
-        await nft.mint(nftMintAmount);
-
         const balance = await nft.balanceOf(bagHolder);
 
         expect(balance.toString()).to.equal(nftMintAmount.toString());
+    });
 
-        const nftClaims = await erc20.nftClaims(bagHolder);
-        expect(nftClaims.toString()).to.equal("0");
+    it("only mints maximum of 210 NFTs", async function () {
+        const nftMintAmount = ethers.BigNumber.from(9);
+
+        const calls = 210;
+        const promises = [];
+        for (let i = 0; i < calls; i += 1) {
+            promises.push(erc20.burn(nftMintAmount.mul(DECIMALS_MULTIPLIER)));
+        }
+
+        await Promise.all(promises);
+
+        const balance = await nft.balanceOf(bagHolder);
+
+        expect(balance.toString()).to.equal("210");
     });
 });

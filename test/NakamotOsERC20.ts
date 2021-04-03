@@ -30,8 +30,6 @@ describe("ERC20", function () {
         expect((await token.balanceOf(bagHolderAddress)).toString()).to.equal(expectedAmountLeft.toString());
 
         expect((await token.totalSupply()).toString()).to.equal(expectedAmountLeft.toString());
-
-        expect((await token.nftClaims(bagHolderAddress)).toString()).to.equal(burnAmount.toString());
     });
 
     it("has corrent nft claims after multiple claims", async function () {
@@ -43,7 +41,5 @@ describe("ERC20", function () {
         }
 
         await Promise.all(burnPromises);
-
-        expect((await token.nftClaims(bagHolderAddress)).toString()).to.equal(burnAmount.mul(timesBurned).toString());
     });
 });
