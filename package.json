@@ -78,7 +78,8 @@
     "deploy": "hardhat deploy"
   },
   "dependencies": {
-    "@openzeppelin/contracts": "^4.0.0-rc.0",
+    "@chainlink/contracts": "^0.1.6",
+    "@openzeppelin/contracts": "3.4.0",
     "mnemonic": "^1.0.1"
   }
 }
