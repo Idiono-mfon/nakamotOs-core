@@ -2,7 +2,7 @@
 import { expect } from "chai";
 import { ethers } from "hardhat";
 import { NakamotOsERC721, NakamotOsERC20 } from "../typechain";
-import { DECIMALS_MULTIPLIER, NFT_URI } from "../constants";
+import { DECIMALS_MULTIPLIER, NFT_URI, MAX_NFT_SUPPLY } from "../constants";
 import setup from "./helpers/setup";
 
 describe("ERC721", function () {
@@ -47,10 +47,10 @@ describe("ERC721", function () {
         expect(balance.toString()).to.equal(nftMintAmount.toString());
     });
 
-    it("only mints maximum of 210 NFTs", async function () {
+    it(`only mints maximum of ${MAX_NFT_SUPPLY} NFTs`, async function () {
         const nftMintAmount = ethers.BigNumber.from(9);
 
-        const calls = 210;
+        const calls = MAX_NFT_SUPPLY;
         const promises = [];
         for (let i = 0; i < calls; i += 1) {
             promises.push(erc20.burn(nftMintAmount.mul(DECIMALS_MULTIPLIER)));

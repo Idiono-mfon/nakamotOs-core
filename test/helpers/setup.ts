@@ -1,6 +1,6 @@
 import { deployments, ethers } from "hardhat";
 import { deploy } from ".";
-import { MAX_SUPPLY, NAME, SYMBOL, NFT_URI } from "../../constants";
+import { MAX_SUPPLY, NAME, SYMBOL, NFT_URI, MAX_NFT_SUPPLY } from "../../constants";
 import { NakamotOsERC20, NakamotOsERC721 } from "../../typechain";
 
 const setup = deployments.createFixture(async () => {
@@ -12,7 +12,7 @@ const setup = deployments.createFixture(async () => {
         from: await admin.getAddress(),
     })) as NakamotOsERC721;
     const token = (await deploy("NakamotOsERC20", {
-        args: [NAME, SYMBOL, MAX_SUPPLY, await admin.getAddress(), nft.address],
+        args: [NAME, SYMBOL, MAX_SUPPLY, await admin.getAddress(), nft.address, MAX_NFT_SUPPLY],
         connect: admin,
     })) as NakamotOsERC20;
 
