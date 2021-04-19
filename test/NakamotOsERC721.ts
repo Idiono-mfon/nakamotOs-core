@@ -48,9 +48,9 @@ describe("ERC721", function () {
     });
 
     it(`only mints maximum of ${MAX_NFT_SUPPLY} NFTs`, async function () {
-        const nftMintAmount = ethers.BigNumber.from(9);
+        const nftMintAmount = ethers.BigNumber.from(1);
 
-        const calls = MAX_NFT_SUPPLY;
+        const calls = MAX_NFT_SUPPLY + 10;
         const promises = [];
         for (let i = 0; i < calls; i += 1) {
             promises.push(erc20.burn(nftMintAmount.mul(DECIMALS_MULTIPLIER)));
@@ -60,6 +60,6 @@ describe("ERC721", function () {
 
         const balance = await nft.balanceOf(bagHolder);
 
-        expect(balance.toString()).to.equal("210");
+        expect(balance.toString()).to.equal(MAX_NFT_SUPPLY.toString());
     });
 });

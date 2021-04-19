@@ -27,19 +27,23 @@ describe("ERC20", function () {
         await token.burn(burnAmount);
         const expectedAmountLeft = MAX_SUPPLY.sub(burnAmount);
 
+        expect((await token.burnedTokens(bagHolderAddress)).toString()).to.equal(burnAmount.toString());
         expect((await token.balanceOf(bagHolderAddress)).toString()).to.equal(expectedAmountLeft.toString());
 
         expect((await token.totalSupply()).toString()).to.equal(expectedAmountLeft.toString());
     });
 
-    it("has corrent nft claims after multiple claims", async function () {
-        const burnAmount = DECIMALS_MULTIPLIER.mul(10);
-        const timesBurned = 3;
+    it("allows burning the token multiple times", async function () {
+        const burnAmount = DECIMALS_MULTIPLIER.mul(3);
+        const burnTimes = 3;
+
         const burnPromises = [];
-        for (let i = 0; i < timesBurned; i += 1) {
+        for (let i = 0; i < burnTimes; i += 1) {
             burnPromises.push(token.burn(burnAmount));
         }
 
         await Promise.all(burnPromises);
+
+        expect((await token.burnedTokens(bagHolderAddress)).toString()).to.equal(burnAmount.mul(burnTimes).toString());
     });
 });

@@ -10,6 +10,8 @@ contract NakamotOsERC20 is ERC20 {
 
     event Burn(address indexed burner, uint256 amount);
 
+    mapping (address => uint256) public burnedTokens;
+
     NakamotOsERC721 public nftToken;
 
     uint256 public maxNFTSupply;
@@ -35,6 +37,7 @@ contract NakamotOsERC20 is ERC20 {
     function burn(uint256 amount) external returns (bool) {
         _burn(_msgSender(), amount);
         emit Burn(_msgSender(), amount);
+        burnedTokens[_msgSender()] = burnedTokens[_msgSender()].add(amount);
 
         uint256 nftSupply = nftToken.totalSupply();
         if (nftSupply < maxNFTSupply) {
