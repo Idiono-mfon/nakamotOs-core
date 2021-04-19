@@ -5,4 +5,4 @@ export const MAX_SUPPLY = DECIMALS_MULTIPLIER.mul(500);
 export const NAME = "Nakamot-Os";
 export const SYMBOL = "BOX";
 export const NFT_URI = "https://arweave.net/w8Vs3I-TmRIcZVNaSkxjVhtWc9ZJleCJeSRlpXEVdPM";
-export const MAX_NFT_SUPPLY = 210;
+export const MAX_NFT_SUPPLY = 69;
