@@ -6,4 +6,4 @@ export const NAME = "Nakamot-Os";
 export const SYMBOL = "BOX";
 export const NFT_URI = "https://arweave.net/w8Vs3I-TmRIcZVNaSkxjVhtWc9ZJleCJeSRlpXEVdPM";
 export const NFT_SUPPLY = 10;
-export const BLOCKS_TIL_LOTTO = 90420; // about 2 weeks
+export const BLOCKS_TIL_LOTTO = 69420; // about 1.5 weeks
