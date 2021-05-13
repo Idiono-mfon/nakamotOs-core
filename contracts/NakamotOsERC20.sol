@@ -76,12 +76,15 @@ contract NakamotOsERC20 is ERC20, VRFConsumerBase {
         return true;
     }
 
+    // TODO: create an hardhat task that calls startLottery https://hardhat.org/guides/create-task.html
+    // tasks are in the task folder
     // function for lotto call after block
-    function startLottery() public returns (bytes32 requestId) {
+    function startLottery(uint256 userProvidedSeed) public returns (bytes32 requestId) {
+        // TODO: require that the lottery has not already started
+
         require(block.number >= lottoBlock, "The lottery is not ready");
         require(LINK.balanceOf(address(this)) >= fee, "Not enough LINK to pay the fee");
 
-        // TODO: need to figure out the requirements for this userProvidedSeed
         return requestRandomness(keyHash, fee, userProvidedSeed);
     }
 
@@ -100,4 +103,12 @@ contract NakamotOsERC20 is ERC20, VRFConsumerBase {
         }
         return expandedValues;
     }
+
+
+    /*
+    TESTING TODO:
+        - create tests for buring the token on a local blockchain
+        - create test for lottery that only runs on kovan or another chainlink network
+            Chainlink networks: https://docs.chain.link/docs/vrf-contracts/
+    */
 }
