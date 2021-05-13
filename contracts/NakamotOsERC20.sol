@@ -67,6 +67,8 @@ contract NakamotOsERC20 is ERC20, VRFConsumerBase {
             uint256 ticketsCreated = amount.div(ONE);
             for (uint256 i = 0; i < ticketsCreated; i++) {
                 ticketOwners[tickets.legnth] = _msgSender();
+
+                // TODOS: take out tickets array
                 tickets.push(tickets.length);
             }
 
@@ -93,6 +95,10 @@ contract NakamotOsERC20 is ERC20, VRFConsumerBase {
     // NOTE: we can optimize for storage by removing the tickets array and just keeping track of a uint of ticket supply
     function fulfillRandomness(bytes32 requestId, uint256 randomness) internal override {
         randomResult = randomness;
+
+        // for each value of randomness, take randomness % num_of_tickets to get winning ticket #
+            // get ticket owner  based on ticket number
+            // mint NFT to the ticket owner
     }
 
     // function copied from https://docs.chain.link/docs/get-a-random-number#making-the-most-out-of-vrf
@@ -107,7 +113,7 @@ contract NakamotOsERC20 is ERC20, VRFConsumerBase {
 
     /*
     TESTING TODO:
-        - create tests for buring the token on a local blockchain
+        - create tests for burning the token on a local blockchain
         - create test for lottery that only runs on kovan or another chainlink network
             Chainlink networks: https://docs.chain.link/docs/vrf-contracts/
     */
