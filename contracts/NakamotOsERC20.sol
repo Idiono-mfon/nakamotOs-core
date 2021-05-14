@@ -12,19 +12,19 @@ contract NakamotOsERC20 is ERC20, VRFConsumerBase {
 
     event Burn(address indexed burner, uint256 amount);
 
-    mapping (address => uint256) public burnedTokens;
+    mapping(address => uint256) public burnedTokens;
 
     NakamotOsERC721 public nftToken;
     uint256 public maxNFTSupply;
-    uint256 public ONE = 10 ** 18;
+    uint256 public ONE = 10**18;
 
     bytes32 private keyHash;
 
     uint256 public lottoBlock;
 
-    uint256[] public tickets;
-    mapping(uint256 => address) public ticketOwners;
-    mapping(address => uint256) public ticketCount;
+    uint256 public ticketCount;
+    mapping(uint256 => address) public ticketToOwner;
+    mapping(address => uint256) public ownerTicketCount;
 
     uint256 private fee;
 
@@ -40,11 +40,7 @@ contract NakamotOsERC20 is ERC20, VRFConsumerBase {
         address vrfCoordinator,
         address linkToken,
         uint256 linkFee
-    )
-        public
-        ERC20(name_, symbol_)
-        VRFConsumerBase(vrfCoordinator, linkToken)
-    {
+    ) public ERC20(name_, symbol_) VRFConsumerBase(vrfCoordinator, linkToken) {
         _mint(bagHolder, maxSupply);
         nftToken = NakamotOsERC721(nftTokenAddress_);
         maxNFTSupply = maxNFTSupply_;
@@ -66,13 +62,11 @@ contract NakamotOsERC20 is ERC20, VRFConsumerBase {
         if (block.number < lottoBlock) {
             uint256 ticketsCreated = amount.div(ONE);
             for (uint256 i = 0; i < ticketsCreated; i++) {
-                ticketOwners[tickets.legnth] = _msgSender();
-
-                // TODOS: take out tickets array
-                tickets.push(tickets.length);
+                ticketToOwner[ticketCount] = _msgSender();
+                ticketCount++;
             }
 
-            ticketCount[_msgSender()] = ticketCount[_msgSender()].add(ticketsCreated);
+            ownerTicketCount[_msgSender()] = ownerTicketCount[_msgSender()].add(ticketsCreated);
         }
 
         return true;
@@ -82,23 +76,19 @@ contract NakamotOsERC20 is ERC20, VRFConsumerBase {
     // tasks are in the task folder
     // function for lotto call after block
     function startLottery(uint256 userProvidedSeed) public returns (bytes32 requestId) {
-        // TODO: require that the lottery has not already started
-
-        require(block.number >= lottoBlock, "The lottery is not ready");
+        require(block.number >= lottoBlock, "The lottery has already started");
         require(LINK.balanceOf(address(this)) >= fee, "Not enough LINK to pay the fee");
 
         return requestRandomness(keyHash, fee, userProvidedSeed);
     }
 
-    // TODO: callback to receive randomness, should call expand to return 1 random number into 10
-    // then get the owner of the ticket and mint them an NFT
-    // NOTE: we can optimize for storage by removing the tickets array and just keeping track of a uint of ticket supply
     function fulfillRandomness(bytes32 requestId, uint256 randomness) internal override {
-        randomResult = randomness;
-
-        // for each value of randomness, take randomness % num_of_tickets to get winning ticket #
-            // get ticket owner  based on ticket number
-            // mint NFT to the ticket owner
+        uint256[] memory randomNumbers = expand(randomness);
+        for (uint256 index = 0; i < randomNumbers; i++) {
+            uint256 randomTicket = randomNumbers[index] % ticketCount;
+            address ticketOwner = ticketToOwner[randomTicket];
+            nftToken.mint(ticketOwner, 1);
+        }
     }
 
     // function copied from https://docs.chain.link/docs/get-a-random-number#making-the-most-out-of-vrf
@@ -109,7 +99,6 @@ contract NakamotOsERC20 is ERC20, VRFConsumerBase {
         }
         return expandedValues;
     }
-
 
     /*
     TESTING TODO:
