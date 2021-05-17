@@ -1,3 +1,4 @@
+import { ethers } from "ethers";
 import { task } from "hardhat/config";
 
 import { TRANSFER } from "./task-names";
@@ -11,7 +12,7 @@ task(TRANSFER, "transfer NakamotOs to whomever you wish")
         const { recipient, amount } = _taskArgs;
         const { BigNumber } = hre.ethers;
 
-        if (!hre.ethers.utils.isAddress(recipient)) {
+        if (!ethers.utils.isAddress(recipient)) {
             throw new Error(`${recipient} is not an address`);
         }
 
