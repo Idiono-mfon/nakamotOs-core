@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity 0.6.9;
+pragma solidity <0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@chainlink/contracts/src/v0.6/VRFConsumerBase.sol";
+import "@chainlink/contracts/src/v0.6/vendor/SafeMathChainlink.sol";
 
 import "./NakamotOsERC721.sol";
 
@@ -57,16 +58,16 @@ contract NakamotOsERC20 is ERC20, VRFConsumerBase {
         emit Burn(_msgSender(), amount);
 
         // burned token mapping so we can easily see how many tokens an address has burned
-        burnedTokens[_msgSender()] = burnedTokens[_msgSender()].add(amount);
+        burnedTokens[_msgSender()] = burnedTokens[_msgSender()] + amount;
 
         if (block.number < lottoBlock) {
-            uint256 ticketsCreated = amount.div(ONE);
+            uint256 ticketsCreated = amount / ONE;
             for (uint256 i = 0; i < ticketsCreated; i++) {
                 ticketToOwner[ticketCount] = _msgSender();
                 ticketCount++;
             }
 
-            ownerTicketCount[_msgSender()] = ownerTicketCount[_msgSender()].add(ticketsCreated);
+            ownerTicketCount[_msgSender()] = ownerTicketCount[_msgSender()] + ticketsCreated;
         }
 
         return true;
@@ -84,7 +85,7 @@ contract NakamotOsERC20 is ERC20, VRFConsumerBase {
 
     function fulfillRandomness(bytes32 requestId, uint256 randomness) internal override {
         uint256[] memory randomNumbers = expand(randomness);
-        for (uint256 index = 0; i < randomNumbers; i++) {
+        for (uint256 index = 0; index < randomNumbers.length; index++) {
             uint256 randomTicket = randomNumbers[index] % ticketCount;
             address ticketOwner = ticketToOwner[randomTicket];
             nftToken.mint(ticketOwner, 1);
@@ -92,7 +93,7 @@ contract NakamotOsERC20 is ERC20, VRFConsumerBase {
     }
 
     // function copied from https://docs.chain.link/docs/get-a-random-number#making-the-most-out-of-vrf
-    function expand(uint256 randomValue) public pure returns (uint256[] memory expandedValues) {
+    function expand(uint256 randomValue) public view returns (uint256[] memory expandedValues) {
         expandedValues = new uint256[](maxNFTSupply);
         for (uint256 i = 0; i < maxNFTSupply; i++) {
             expandedValues[i] = uint256(keccak256(abi.encode(randomValue, i)));
