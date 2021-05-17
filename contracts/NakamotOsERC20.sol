@@ -4,7 +4,6 @@ pragma solidity <0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@chainlink/contracts/src/v0.6/VRFConsumerBase.sol";
-import "@chainlink/contracts/src/v0.6/vendor/SafeMathChainlink.sol";
 
 import "./NakamotOsERC721.sol";
 
