@@ -9,6 +9,8 @@ import "@nomiclabs/hardhat-waffle";
 import "hardhat-gas-reporter";
 import "hardhat-typechain";
 import "solidity-coverage";
+import "@nomiclabs/hardhat-ethers";
+import "hardhat-deploy-ethers";
 
 const accounts = {
     count: 10,
