@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.6.9;
 
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "./ERC20.sol";
 import "@chainlink/contracts/src/v0.6/VRFConsumerBase.sol";
 
 import "./NakamotOsERC721.sol";
 
 contract NakamotOsERC20 is ERC20, VRFConsumerBase {
-    using SafeMath for uint256;
+    using SafeMathChainlink for uint256;
 
     event Burn(address indexed burner, uint256 amount);
 
