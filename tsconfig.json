@@ -22,7 +22,6 @@
         "test/**/*",
         "typechain/**/*",
         "types/**/*",
-        "helper-hardhat-config.ts",
         "hardhat.config.ts",
         "config/**/*"
     ]
