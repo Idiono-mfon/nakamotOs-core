@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: MIT
-
-pragma solidity <0.8.0;
+pragma solidity 0.6.9;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@chainlink/contracts/src/v0.6/VRFConsumerBase.sol";
@@ -21,6 +20,7 @@ contract NakamotOsERC20 is ERC20, VRFConsumerBase {
     bytes32 private keyHash;
 
     uint256 public lottoBlock;
+    bool private hasLotteryStarted;
 
     uint256 public ticketCount;
     mapping(uint256 => address) public ticketToOwner;
@@ -46,6 +46,7 @@ contract NakamotOsERC20 is ERC20, VRFConsumerBase {
         maxNFTSupply = maxNFTSupply_;
         keyHash = keyHash_;
         lottoBlock = block.number + blocksTilLotto;
+        hasLotteryStarted = false;
 
         fee = linkFee;
     }
@@ -57,16 +58,16 @@ contract NakamotOsERC20 is ERC20, VRFConsumerBase {
         emit Burn(_msgSender(), amount);
 
         // burned token mapping so we can easily see how many tokens an address has burned
-        burnedTokens[_msgSender()] = burnedTokens[_msgSender()] + amount;
+        burnedTokens[_msgSender()] = burnedTokens[_msgSender()].add(amount);
 
         if (block.number < lottoBlock) {
-            uint256 ticketsCreated = amount / ONE;
+            uint256 ticketsCreated = amount.div(ONE);
             for (uint256 i = 0; i < ticketsCreated; i++) {
                 ticketToOwner[ticketCount] = _msgSender();
                 ticketCount++;
             }
 
-            ownerTicketCount[_msgSender()] = ownerTicketCount[_msgSender()] + ticketsCreated;
+            ownerTicketCount[_msgSender()] = ownerTicketCount[_msgSender()].add(ticketsCreated);
         }
 
         return true;
@@ -76,9 +77,11 @@ contract NakamotOsERC20 is ERC20, VRFConsumerBase {
     // tasks are in the task folder
     // function for lotto call after block
     function startLottery(uint256 userProvidedSeed) public returns (bytes32 requestId) {
+        require(hasLotteryStarted == false, "The lottery hasn't started yet");
         require(block.number >= lottoBlock, "The lottery has already started");
         require(LINK.balanceOf(address(this)) >= fee, "Not enough LINK to pay the fee");
-
+        
+        hasLotteryStarted = true;
         return requestRandomness(keyHash, fee, userProvidedSeed);
     }
 
