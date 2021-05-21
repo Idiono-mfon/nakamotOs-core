@@ -56,17 +56,17 @@ contract NakamotOsERC20 is ERC20, VRFConsumerBase {
     function burn(uint256 amount) external returns (bool) {
         _burn(_msgSender(), amount);
         emit Burn(_msgSender(), amount);
+        
 
-        // burned token mapping so we can easily see how many tokens an address has burned
-        burnedTokens[_msgSender()] = burnedTokens[_msgSender()].add(amount);
+        // burned token mapping so we can easily see how many tokens an address has burned        
+        burnedTokens[_msgSender()] = burnedTokens[_msgSender()].add(amount);        
 
         if (block.number < lottoBlock) {
             uint256 ticketsCreated = amount.div(ONE);
             for (uint256 i = 0; i < ticketsCreated; i++) {
                 ticketToOwner[ticketCount] = _msgSender();
                 ticketCount++;
-            }
-
+            }            
             ownerTicketCount[_msgSender()] = ownerTicketCount[_msgSender()].add(ticketsCreated);
         }
 
