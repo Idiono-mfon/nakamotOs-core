@@ -113,7 +113,7 @@ describe("ERC721", function () {
         expect(ticketCount.toNumber()).to.equal(0);
     });
 
-    it.only("allows multiple lotto tickets to be created by different users", async function () {
+    it("allows multiple lotto tickets to be created by different users", async function () {
         advanceBlock(0);
         const amount = ethers.BigNumber.from(5);
         const tokenAmount = amount.mul(DECIMALS_MULTIPLIER);
