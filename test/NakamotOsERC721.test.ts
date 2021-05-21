@@ -86,7 +86,9 @@ describe("ERC721", function () {
 
     it("has zero lotto tickets if not enough tokens are burnt", async function () {
         const amount = ethers.BigNumber.from(1);
-        const tokenAmount = amount.add(DECIMALS_MULTIPLIER);
+        const tokenAmount = amount.mul(DECIMALS_MULTIPLIER).div(10);
+        expect(tokenAmount.lt(DECIMALS_MULTIPLIER)).to.equal(true);
+
         await erc20.burn(tokenAmount);
 
         const tokensBurned = await erc20.burnedTokens(bagHolder);
@@ -152,15 +154,6 @@ describe("ERC721", function () {
         expect(ticketCount.toString()).to.equal(amount.mul(2).toString());
         expect(isTicketToAdminValid).to.equal(true);
         expect(isTicketToUserValid).to.equal(true);
-    });
-
-    it("allows claiming multiple nfts at once", async function () {
-        const nftMintAmount = ethers.BigNumber.from(5);
-        await erc20.burn(nftMintAmount.mul(DECIMALS_MULTIPLIER));
-        const balance = await nft.balanceOf(bagHolder);
-        await advanceBlock(10);
-
-        expect(balance.toString()).to.equal(nftMintAmount.toString());
     });
 
     it(`only mints maximum of ${MAX_NFT_SUPPLY} NFTs`, async function () {

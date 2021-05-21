@@ -1,5 +1,8 @@
 /* eslint-disable func-names */
 import { expect } from "chai";
+import { ethers } from "hardhat";
+import { BigNumber } from "@ethersproject/bignumber";
+
 import { NakamotOsERC20 } from "../typechain";
 import { DECIMALS_MULTIPLIER, MAX_SUPPLY } from "../constants";
 import setup from "./helpers/setup";
@@ -14,7 +17,7 @@ describe("ERC20", function () {
         bagHolderAddress = deployment.bagHolderAddress;
     });
 
-    it("should have a total supply of 2100e18", async function () {
+    it(`should have a total supply of ${MAX_SUPPLY}`, async function () {
         expect((await token.totalSupply()).toString()).to.equal(MAX_SUPPLY.toString());
     });
 
@@ -48,6 +51,40 @@ describe("ERC20", function () {
             expect((await token.burnedTokens(bagHolderAddress)).toString()).to.equal(
                 burnAmount.mul(burnTimes).toString(),
             );
+        });
+
+        it("allows running the lottery", async function () {
+            const signers = await ethers.getSigners();
+
+            const burnFrom = async (signer: any): Promise<void> => {
+                await token.transfer(signer.address, DECIMALS_MULTIPLIER);
+                await token.connect(signer).burn(DECIMALS_MULTIPLIER);
+            };
+
+            const burnPromises = [];
+            for (let i = 0; i < signers.length; i += 1) {
+                burnPromises.push(burnFrom(signers[i]));
+            }
+
+            await Promise.all(burnPromises);
+
+            const tokensBurnedPromises = [];
+            for (let i = 0; i < signers.length; i += 1) {
+                tokensBurnedPromises.push(token.burnedTokens(signers[i].address));
+            }
+
+            const tokensBurned = await Promise.all(tokensBurnedPromises);
+
+            tokensBurned.forEach((burned: BigNumber) => expect(burned.gte(1)).to.equal(true));
+
+            const ticketCount = await token.ticketCount();
+
+            console.log({ ticketCount });
+
+            // await link.transfer(token.address, fee);
+            const res = await token.rawFulfillRandomness(ethers.utils.randomBytes(32), "4230982");
+
+            console.log({ res });
         });
     });
 });
