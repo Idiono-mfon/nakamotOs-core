@@ -78,6 +78,7 @@
     "prettier": "prettier --config .prettierrc --write \"**/*.{js,json,md,sol,ts}\"",
     "prettier:list-different": "prettier --config .prettierrc --list-different \"**/*.{js,json,md,sol,ts}\"",
     "test:local": "hardhat test test/local/*",
+    "test:kovan": "hardhat test test/kovan/* --network kovan",
     "typechain": "hardhat typechain",
     "deploy": "hardhat deploy"
   },

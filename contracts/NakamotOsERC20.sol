@@ -28,6 +28,11 @@ contract NakamotOsERC20 is ERC20, VRFConsumerBase {
 
     uint256 private fee;
 
+    uint256 public randomNumber;
+
+    bool public hasRandomNumber = false;
+    bool public hasMintedNFTs = false;
+
     constructor(
         string memory name_,
         string memory symbol_,
@@ -86,12 +91,23 @@ contract NakamotOsERC20 is ERC20, VRFConsumerBase {
     }
 
     function fulfillRandomness(bytes32 /* requestId */, uint256 randomness) internal override {
-        uint256[] memory randomNumbers = expand(randomness);
+        randomNumber = randomness;
+        hasRandomNumber = true;
+    }
+
+    function mintNFTs() external {
+        require(hasRandomNumber, "Random Numbers have not been set");
+        require(!hasMintedNFTs, "NFTs already minted");
+
+        uint256[] memory randomNumbers = expand(randomNumber);
+
         for (uint256 index = 0; index < randomNumbers.length; index++) {
             uint256 randomTicket = randomNumbers[index].mod(ticketCount);
             address ticketOwner = ticketToOwner[randomTicket];
             nftToken.mint(ticketOwner, 1);
         }
+
+        hasMintedNFTs = true;
     }
 
     // function copied from https://docs.chain.link/docs/get-a-random-number#making-the-most-out-of-vrf

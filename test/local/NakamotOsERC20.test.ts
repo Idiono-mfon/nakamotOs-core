@@ -103,10 +103,9 @@ describe("ERC20", function () {
 
             await advanceBlock(blocksTilLotto);
 
-            const response = await token.rawFulfillRandomness(
-                ethers.utils.randomBytes(32),
-                (Math.random() * 100).toFixed(0),
-            );
+            await token.rawFulfillRandomness(ethers.utils.randomBytes(32), (Math.random() * 100).toFixed(0));
+
+            const response = await token.mintNFTs();
 
             const { logs } = await response.wait();
             logs.forEach((log, i) => {
@@ -149,10 +148,9 @@ describe("ERC20", function () {
 
             await advanceBlock(blocksTilLotto);
 
-            const response = await token.rawFulfillRandomness(
-                ethers.utils.randomBytes(32),
-                (Math.random() * 100).toFixed(0),
-            );
+            await token.rawFulfillRandomness(ethers.utils.randomBytes(32), (Math.random() * 100).toFixed(0));
+
+            const response = await token.mintNFTs();
 
             const { logs } = await response.wait();
             const winners = logs.map((log, i) => {

@@ -60,6 +60,9 @@ const config: HardhatUserConfig = {
         gasPrice: 100,
         excludeContracts: ["Mock"],
     },
+    mocha: {
+        timeout: 2000000,
+    },
 };
 
 export default config;
