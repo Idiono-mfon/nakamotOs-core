@@ -1,6 +1,6 @@
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { DeployFunction } from "hardhat-deploy/types";
-import { MAX_SUPPLY, NAME, SYMBOL, NFT_URI, NFT_SUPPLY } from "../constants";
+import { MAX_SUPPLY, NAME, SYMBOL, NFT_URI, MAX_NFT_SUPPLY } from "../constants";
 
 const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
     const { deployments, getNamedAccounts, network } = hre;
@@ -42,7 +42,7 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
             MAX_SUPPLY,
             deployer,
             nft.address,
-            NFT_SUPPLY,
+            MAX_NFT_SUPPLY,
             chainlinkKeyhash,
             chainlinkVrfCoordinator,
             chainlinkToken,

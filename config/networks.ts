@@ -1,4 +1,4 @@
-import { infuraApiKey, maticVigilApiKey } from "./env";
+import { infuraApiKey } from "./env";
 import { DECIMALS_MULTIPLIER } from "../constants";
 
 export enum ChainId {
@@ -7,11 +7,8 @@ export enum ChainId {
     hardhat = 31337,
     kovan = 42,
     mainnet = 1,
-    matic = 137,
-    mumbai = 80001,
     rinkeby = 4,
     ropsten = 3,
-    xdai = 100,
 }
 
 // Delegate requests for a network config to a provider specific function based on which networks they serve
@@ -29,34 +26,10 @@ const getInfuraConfig = (network: InfuraChain): { url: string; chainId: number }
     };
 };
 
-// Matic
-const maticVigilChains = ["matic", "mumbai"] as const;
-type MaticVigilChain = typeof maticVigilChains[number];
-const getMaticVigilConfig = (network: MaticVigilChain): { url: string; chainId: number } => {
-    if (!maticVigilApiKey) {
-        throw new Error("Please set your MATICVIGIL_API_KEY in a .env file");
-    }
-    return {
-        url: `https://rpc-${network}.maticvigil.com/v1/${maticVigilApiKey}`,
-        chainId: ChainId[network],
-    };
-};
-
-// xDai
-const xDaiChains = ["xdai"] as const;
-type XDaiChain = typeof xDaiChains[number];
-const getXDaiConfig = (network: XDaiChain): { url: string; chainId: number } => {
-    return {
-        url: `https://rpc.xdaichain.com/`,
-        chainId: ChainId[network],
-    };
-};
-
-export type RemoteChain = InfuraChain | MaticVigilChain | XDaiChain;
+export type RemoteChain = InfuraChain;
 export const getRemoteNetworkConfig = (network: RemoteChain): { url: string; chainId: number } => {
     if (infuraChains.includes(network as InfuraChain)) return getInfuraConfig(network as InfuraChain);
-    if (maticVigilChains.includes(network as MaticVigilChain)) return getMaticVigilConfig(network as MaticVigilChain);
-    if (xDaiChains.includes(network as XDaiChain)) return getXDaiConfig(network as XDaiChain);
+
     throw Error("Unknown network");
 };
 
@@ -67,7 +40,6 @@ interface networkInterface {
 export const networkConfig: networkInterface = {
     31337: {
         name: "hardhat",
-        fee: "100000000000000000",
         keyHash: "0x6c3699283bda56ad74f6b855546325b68d482e983852a7a82979cc4807b641f4",
         fee: DECIMALS_MULTIPLIER.div(10),
     },

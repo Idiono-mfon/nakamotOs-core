@@ -1,6 +1,6 @@
-import { ethers } from "hardhat";
+import { BigNumber } from "ethers";
 
-export const DECIMALS_MULTIPLIER = ethers.BigNumber.from(10).pow(18);
+export const DECIMALS_MULTIPLIER = BigNumber.from(10).pow(18);
 export const MAX_SUPPLY = DECIMALS_MULTIPLIER.mul(500);
 export const NAME = "Nakamot-Os";
 export const SYMBOL = "BOX";
