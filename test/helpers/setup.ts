@@ -35,7 +35,7 @@ const setup = deployments.createFixture(async hre => {
             await admin.getAddress(),
             nft.address,
             MAX_NFT_SUPPLY,
-            10, // lottery block
+            50, // lottery block
             keyHash,
             vrfCoordinator,
             link.address,
