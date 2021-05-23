@@ -3,8 +3,8 @@ pragma solidity 0.6.9;
 
 import "./ERC20.sol";
 import "@chainlink/contracts/src/v0.6/VRFConsumerBase.sol";
-
 import "./NakamotOsERC721.sol";
+
 
 contract NakamotOsERC20 is ERC20, VRFConsumerBase {
     using SafeMathChainlink for uint256;
@@ -79,6 +79,7 @@ contract NakamotOsERC20 is ERC20, VRFConsumerBase {
         require(hasLotteryStarted == false, "The lottery hasn't started yet");
         require(block.number >= lottoBlock, "The lottery has already started");
         require(LINK.balanceOf(address(this)) >= fee, "Not enough LINK to pay the fee");
+        require(ticketCount > 0, "Must be tickets to start lottery");
 
         hasLotteryStarted = true;
         return requestRandomness(keyHash, fee, userProvidedSeed);
