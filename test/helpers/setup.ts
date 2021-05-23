@@ -1,4 +1,4 @@
-import { deployments, ethers } from "hardhat";
+import { deployments, ethers, network } from "hardhat";
 import { deploy } from ".";
 import { MAX_SUPPLY, NAME, SYMBOL, NFT_URI, MAX_NFT_SUPPLY } from "../../constants";
 import { NakamotOsERC20, NakamotOsERC721 } from "../../typechain";
@@ -22,11 +22,29 @@ const setup = deployments.createFixture(async hre => {
         link = await deploy("LinkToken", { args: [], connect: admin });
     }
 
+    if (network.name === "kovan") {
+        const { address: nftAddress } = await deployments.get("NakamotOsERC721");
+        const { address: tokenAddress } = await deployments.get("NakamotOsERC20");
+
+        const token = ((await ethers.getContractAt("NakamotOsERC20", tokenAddress)) as unknown) as NakamotOsERC20;
+        const nft = ((await ethers.getContractAt("NakamotOsERC20", nftAddress)) as unknown) as NakamotOsERC721;
+
+        return {
+            token,
+            nft,
+            bagHolderAddress,
+            userSigner: user,
+            link,
+            fee,
+        };
+    }
+
     const nft = ((await deploy("NakamotOsERC721", {
         args: [NAME, SYMBOL, NFT_URI],
         connect: admin,
         from: await admin.getAddress(),
     })) as unknown) as NakamotOsERC721;
+
     const token = ((await deploy("NakamotOsERC20", {
         args: [
             NAME,
