@@ -76,7 +76,7 @@ contract NakamotOsERC20 is ERC20, VRFConsumerBase {
 
     // function for lotto call after block
     function startLottery(uint256 userProvidedSeed) public returns (bytes32 requestId) {
-        require(hasLotteryStarted == false, "The lottery hasn't started yet");
+        require(hasLotteryStarted == false, "The lottery has not started yet");
         require(block.number >= lottoBlock, "The lottery has already started");
         require(LINK.balanceOf(address(this)) >= fee, "Not enough LINK to pay the fee");
         require(ticketCount > 0, "Must be tickets to start lottery");
