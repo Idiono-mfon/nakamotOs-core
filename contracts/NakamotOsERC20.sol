@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.6.9;
 
-import "./ERC20.sol";
 import "@chainlink/contracts/src/v0.6/VRFConsumerBase.sol";
 import "./NakamotOsERC721.sol";
+import "./ERC20.sol";
 
 
 contract NakamotOsERC20 is ERC20, VRFConsumerBase {
