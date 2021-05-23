@@ -4,7 +4,7 @@ import { ethers } from "hardhat";
 import { BigNumber } from "@ethersproject/bignumber";
 
 import { NakamotOsERC20, NakamotOsERC721 } from "../typechain";
-import { DECIMALS_MULTIPLIER, MAX_SUPPLY } from "../constants";
+import { DECIMALS_MULTIPLIER, MAX_SUPPLY, MAX_NFT_SUPPLY } from "../constants";
 import setup from "./helpers/setup";
 import { advanceBlock } from "./helpers/time";
 
@@ -12,12 +12,14 @@ describe("ERC20", function () {
     let token: NakamotOsERC20;
     let nft: NakamotOsERC721;
     let bagHolderAddress: string;
+    let blocksTilLotto: number;
 
     beforeEach(async function () {
         const deployment = await setup();
         token = deployment.token;
         nft = deployment.nft;
         bagHolderAddress = deployment.bagHolderAddress;
+        blocksTilLotto = deployment.blocksTilLotto;
     });
 
     it(`should have a total supply of ${MAX_SUPPLY}`, async function () {
@@ -74,7 +76,7 @@ describe("ERC20", function () {
         });
 
         it("burn token after lotto block does not give burner a ticket", async function () {
-            await advanceBlock(50);
+            await advanceBlock(blocksTilLotto);
 
             const blockNum = await ethers.provider.getBlockNumber();
             const lottoBlock = await token.lottoBlock();
@@ -99,7 +101,7 @@ describe("ERC20", function () {
 
             expect(ticketCount.toNumber()).to.equal(1);
 
-            await advanceBlock(50);
+            await advanceBlock(blocksTilLotto);
 
             const response = await token.rawFulfillRandomness(
                 ethers.utils.randomBytes(32),
@@ -117,6 +119,8 @@ describe("ERC20", function () {
                 expect(to).to.equal(bagHolderAddress);
                 expect(tokenId.toNumber()).to.equal(i);
             });
+
+            expect(logs.length).to.equal(MAX_NFT_SUPPLY);
         });
 
         it("allows running lotto with many tickets", async function () {
@@ -143,7 +147,7 @@ describe("ERC20", function () {
 
             tokensBurned.forEach((burned: BigNumber) => expect(burned.gte(1)).to.equal(true));
 
-            await advanceBlock(50);
+            await advanceBlock(blocksTilLotto);
 
             const response = await token.rawFulfillRandomness(
                 ethers.utils.randomBytes(32),
@@ -165,6 +169,7 @@ describe("ERC20", function () {
 
             // expect not all winners are the same
             expect(winners.some((winner, i) => winner !== winners[0] && i !== 0)).to.equal(true);
+            expect(winners.length).to.equal(MAX_NFT_SUPPLY);
         });
     });
 });

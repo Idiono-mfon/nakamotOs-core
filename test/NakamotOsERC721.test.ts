@@ -3,7 +3,7 @@ import { expect } from "chai";
 import { ethers } from "hardhat";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/dist/src/signer-with-address";
 import { NakamotOsERC721, NakamotOsERC20 } from "../typechain";
-import { DECIMALS_MULTIPLIER, NFT_URI, MAX_NFT_SUPPLY } from "../constants";
+import { DECIMALS_MULTIPLIER, NFT_URI } from "../constants";
 import setup from "./helpers/setup";
 import { advanceBlock } from "./helpers/time";
 
@@ -12,6 +12,7 @@ describe("ERC721", function () {
     let erc20: NakamotOsERC20;
     let bagHolder: string;
     let userSigner: SignerWithAddress;
+    let blocksTilLotto: number;
 
     async function hasValidTicketsToOwner(
         numberOfTickets: number,
@@ -33,6 +34,7 @@ describe("ERC721", function () {
         erc20 = deployment.token;
         bagHolder = deployment.bagHolderAddress;
         userSigner = deployment.userSigner;
+        blocksTilLotto = deployment.blocksTilLotto;
     });
 
     it("has the correct erc20 address", async function () {
@@ -101,7 +103,7 @@ describe("ERC721", function () {
     });
 
     it("only allows a token to be burnt if block.number > lottoBlock", async function () {
-        await advanceBlock(10);
+        await advanceBlock(blocksTilLotto);
         const amount = ethers.BigNumber.from(1);
         const tokenAmount = amount.mul(DECIMALS_MULTIPLIER);
         await erc20.burn(tokenAmount);
@@ -116,7 +118,6 @@ describe("ERC721", function () {
     });
 
     it("allows multiple lotto tickets to be created by different users", async function () {
-        advanceBlock(0);
         const amount = ethers.BigNumber.from(5);
         const tokenAmount = amount.mul(DECIMALS_MULTIPLIER);
         const userAddress = await userSigner.getAddress();
@@ -154,21 +155,5 @@ describe("ERC721", function () {
         expect(ticketCount.toString()).to.equal(amount.mul(2).toString());
         expect(isTicketToAdminValid).to.equal(true);
         expect(isTicketToUserValid).to.equal(true);
-    });
-
-    it(`only mints maximum of ${MAX_NFT_SUPPLY} NFTs`, async function () {
-        const nftMintAmount = ethers.BigNumber.from(1);
-
-        const calls = MAX_NFT_SUPPLY + 10;
-        const promises = [];
-        for (let i = 0; i < calls; i += 1) {
-            promises.push(erc20.burn(nftMintAmount.mul(DECIMALS_MULTIPLIER)));
-        }
-
-        await Promise.all(promises);
-
-        const balance = await nft.balanceOf(bagHolder);
-
-        expect(balance.toString()).to.equal(MAX_NFT_SUPPLY.toString());
     });
 });
