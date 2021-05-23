@@ -2,10 +2,11 @@
 import { expect } from "chai";
 import { ethers } from "hardhat";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/dist/src/signer-with-address";
-import { NakamotOsERC721, NakamotOsERC20 } from "../typechain";
-import { DECIMALS_MULTIPLIER, NFT_URI } from "../constants";
-import setup from "./helpers/setup";
-import { advanceBlock } from "./helpers/time";
+
+import { NakamotOsERC721, NakamotOsERC20 } from "../../typechain";
+import { DECIMALS_MULTIPLIER, NFT_URI } from "../../constants";
+import setup from "../helpers/setup";
+import { advanceBlock } from "../helpers/time";
 
 describe("ERC721", function () {
     let nft: NakamotOsERC721;

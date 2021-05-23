@@ -3,10 +3,10 @@ import { expect } from "chai";
 import { ethers } from "hardhat";
 import { BigNumber } from "@ethersproject/bignumber";
 
-import { NakamotOsERC20, NakamotOsERC721 } from "../typechain";
-import { DECIMALS_MULTIPLIER, MAX_SUPPLY, MAX_NFT_SUPPLY } from "../constants";
-import setup from "./helpers/setup";
-import { advanceBlock } from "./helpers/time";
+import { NakamotOsERC20, NakamotOsERC721 } from "../../typechain";
+import { DECIMALS_MULTIPLIER, MAX_SUPPLY, MAX_NFT_SUPPLY } from "../../constants";
+import setup from "../helpers/setup";
+import { advanceBlock } from "../helpers/time";
 
 describe("ERC20", function () {
     let token: NakamotOsERC20;
