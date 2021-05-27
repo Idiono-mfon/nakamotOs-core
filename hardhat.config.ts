@@ -10,6 +10,7 @@ import "hardhat-gas-reporter";
 import "hardhat-typechain";
 import "solidity-coverage";
 import "@nomiclabs/hardhat-ethers";
+import "@nomiclabs/hardhat-etherscan";
 
 const accounts = {
     count: 10,
@@ -62,6 +63,9 @@ const config: HardhatUserConfig = {
     },
     mocha: {
         timeout: 2000000,
+    },
+    etherscan: {
+        apiKey: process.env.ETHERSCAN_KEY,
     },
 };
 
